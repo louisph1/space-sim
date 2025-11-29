@@ -328,7 +328,7 @@ int main() {
             int a = glfwGetKey(window, GLFW_KEY_C);
             if (a == GLFW_PRESS) {
                 if (!cpressed) {
-                    soiView = !orbitView;
+                    soiView = !soiView;
                 }
                 cpressed = true;
             } else if (a == GLFW_RELEASE) {

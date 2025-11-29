@@ -257,4 +257,3 @@ Ship createShip(double x, double y, double xv, double yv, double orient, double 
 
     return a;
 }
-
