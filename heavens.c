@@ -229,7 +229,6 @@ Orbit createOrbitFromVelocity(double x, double y, double xv, double yv, int orbi
         double invA = 1.0 / fabs(a.semiMajorAxis);
         a.meanMotion = sqrt(a.mu * invA * invA * invA + .00001); //add constant for floating point bs
         a.period = 3600;
-        printf("E%f m%f a%f %f\n", specificOrbitalEnergy, a.meanMotion, a.semiMajorAxis, 1.0 / a.semiMajorAxis);
     }
 
     return a;
