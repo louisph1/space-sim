@@ -44,8 +44,8 @@ double eccentricAnomaly(Orbit* orbit) {
             approx -= (approx - orbit->eccentricity * sin(approx) - orbit->meanAnomaly) / (1 - orbit->eccentricity * cos(approx));
         }
     } else {
-        approx = (orbit->meanAnomaly > 0) ? (.975 * log(orbit->meanAnomaly)) : (-0.975 * log(-orbit->meanAnomaly));
-        for (int i = 0; i < 7; i++) {
+        approx = asinh(orbit->meanAnomaly);
+        for (int i = 0; i < 6; i++) {
             approx -= (orbit->eccentricity * sinh(approx) - approx - orbit->meanAnomaly) / (orbit->eccentricity * cosh(approx) - 1);
         }
     }
@@ -61,8 +61,8 @@ double eccentricAnomaly2(Orbit* orbit, double meanAnomaly) {
             approx -= (approx - orbit->eccentricity * sin(approx) - meanAnomaly) / (1 - orbit->eccentricity * cos(approx));
         }
     } else {
-        approx = (orbit->meanAnomaly > 0) ? (.975 * log(orbit->meanAnomaly)) : (-0.975 * log(-orbit->meanAnomaly));
-        for (int i = 0; i < 7; i++) {
+        approx = asinh(meanAnomaly);
+        for (int i = 0; i < 6; i++) {
             approx -= (orbit->eccentricity * sinh(approx) - approx - meanAnomaly) / (orbit->eccentricity * cosh(approx) - 1);
         }
     }
@@ -101,7 +101,7 @@ Orbit createOrbit(double sma, double ecc, int orbitBody, double orbitBodyMass, d
         a.meanMotion = M_PI * 2 / a.period;
     } else {
         a.period = 3600;
-        a.meanMotion = sqrt(a.mu / abs(sma*sma*sma));
+        a.meanMotion = sqrt(a.mu / fabs(sma*sma*sma));
     }
 
     return a;
@@ -224,10 +224,12 @@ Orbit createOrbitFromVelocity(double x, double y, double xv, double yv, int orbi
     } else {
         //double E = 2 * atanh(sqrt((1 + a.eccentricity) / (a.eccentricity - 1)) * tan(trueAnomaly/2));
         double p = r * (1 + a.eccentricity * cos(trueAnomaly));
-        double E = asinh(sqrt(a.mu / abs(p)) * tan(trueAnomaly) * sqrt(a.eccentricity - 1));
+        double E = asinh(sqrt(a.mu / fabs(p)) * tan(trueAnomaly) * sqrt(a.eccentricity - 1));
         a.meanAnomaly = a.eccentricity * sinh(E) - E;
+        double invA = 1.0 / fabs(a.semiMajorAxis);
+        a.meanMotion = sqrt(a.mu * invA * invA * invA + .00001); //add constant for floating point bs
         a.period = 3600;
-        a.meanMotion = sqrt(a.mu / abs(a.semiMajorAxis*a.semiMajorAxis*a.semiMajorAxis));
+        printf("E%f m%f a%f %f\n", specificOrbitalEnergy, a.meanMotion, a.semiMajorAxis, 1.0 / a.semiMajorAxis);
     }
 
     return a;

@@ -466,7 +466,7 @@ int main() {
 
 
 
-
+        //printOrbit(&ships[0].orbit);
 
         //render
         glUseProgram(shaderProgram);
